@@ -6,6 +6,15 @@ Eigenständiger Mikro-Service zur Text-Extraktion aus Dokumenten. Läuft als Doc
 
 Lokale LLMs mit begrenztem VRAM (z.B. 16 GB) haben enge Kontext-Limits. Wird ein PDF direkt in ein Chat-Interface hochgeladen (z.B. das llama.cpp-Server-UI), landet der Rohdaten-Dump im Kontext und sprengt das Limit schnell. Dieser Service extrahiert zuerst den Reintext — das LLM bekommt nur was es wirklich braucht.
 
+## Browser-UI
+
+Nach dem Start direkt im Browser öffnen: **`http://localhost:7643`**
+
+- PDF per Drag & Drop oder Klick auswählen
+- „Extrahieren" → Text + Metadaten erscheinen
+- Ausgabeformat wählen: **Plaintext** oder **Markdown** (mit Metadaten-Header)
+- „In Zwischenablage" oder „Speichern" (.txt / .md)
+
 ## Voraussetzungen
 
 - Docker + Docker Compose

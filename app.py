@@ -1,5 +1,6 @@
 import io
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.staticfiles import StaticFiles
 from pypdf import PdfReader
 
 app = FastAPI(title="doc-extractor", version="1.0.0")
@@ -36,3 +37,6 @@ async def extract(file: UploadFile = File(...)):
         "estimated_tokens": len(text) // 4,
         "text": text,
     }
+
+
+app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")

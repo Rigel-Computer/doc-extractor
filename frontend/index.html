@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>doc-extractor</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <h1>doc-extractor</h1>
+        <span class="subtitle">PDF → Text</span>
+      </header>
+
+      <!-- Drop Zone -->
+      <section class="section">
+        <div id="dropZone" class="drop-zone">
+          <span class="drop-icon">&#128196;</span>
+          <p class="drop-label">PDF hier ablegen oder klicken</p>
+          <input type="file" id="fileInput" accept=".pdf" hidden />
+        </div>
+        <div id="fileInfo" class="file-info hidden">
+          <span id="fileName" class="file-name"></span>
+          <button id="extractBtn" class="btn btn-primary">Extrahieren</button>
+        </div>
+      </section>
+
+      <!-- Result Panel -->
+      <section id="resultPanel" class="section hidden">
+        <div class="result-header">
+          <span id="statsLine" class="stats-line"></span>
+          <select id="formatSelect" class="format-select">
+            <option value="plain">Plaintext</option>
+            <option value="markdown">Markdown</option>
+          </select>
+        </div>
+        <textarea id="outputText" class="output-text" readonly></textarea>
+        <div class="result-actions">
+          <button id="copyBtn" class="btn btn-secondary">In Zwischenablage</button>
+          <button id="downloadBtn" class="btn btn-secondary">Speichern</button>
+          <span id="copyFeedback" class="copy-feedback"></span>
+        </div>
+      </section>
+
+      <!-- Toast -->
+      <div id="toast" class="toast hidden"></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
