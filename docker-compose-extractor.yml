@@ -1,0 +1,10 @@
+services:
+   doc_extractor:
+      build:
+         context: .
+         dockerfile: Dockerfile_extractor
+      image: doc-extractor:latest
+      container_name: doc_extractor
+      ports:
+         - "7643:7643"
+      restart: unless-stopped

@@ -13,7 +13,7 @@ Lokale LLMs mit begrenztem VRAM (z.B. 16 GB) haben enge Kontext-Limits. Wird ein
 ## Start
 
 ```bash
-docker-compose up -d --build
+docker-compose -f docker-compose-extractor.yml up -d --build
 ```
 
 ## API
@@ -66,8 +66,8 @@ Den zurückgegebenen Text direkt als Kontext in den nächsten Prompt einfügen.
 ## Logs & Management
 
 ```bash
-docker-compose logs -f
-docker-compose down
+docker-compose -f docker-compose-extractor.yml logs -f
+docker-compose -f docker-compose-extractor.yml down
 ```
 
 ## Geplante Erweiterungen
