@@ -1,27 +1,47 @@
 # Changelog
 
-Alle relevanten Änderungen an diesem Projekt werden hier dokumentiert.
-Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/).
+All notable changes to this project are documented here.
+Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+---
+
+## [1.0.2] – 2026-07-31
+
+### Changed
+
+- Project language switched to English: README.md translated, README_DE.md added for German speakers, CHANGELOG.md now in English
+
+---
+
+## [1.0.1] – 2026-07-31
+
+### Fixed
+
+- Stats line showed "connection error" despite server returning 200 OK — caused by `data.tokens` instead of `data.estimated_tokens` in `script.js`
+
+### Changed
+
+- Added volume mounts to `docker-compose-extractor.yml`: `app.py` and `frontend/` are now live-mounted — no rebuild required for code changes
 
 ---
 
 ## [1.0.0] – 2026-07-30
 
-Initiales Release.
+Initial release.
 
 ### Added
 
-- **Browser-UI** unter `http://localhost:7643`: PDF per Drag & Drop oder Klick hochladen, Text extrahieren, kopieren oder als Datei speichern
-- **Ausgabeformat-Auswahl**: Plaintext oder Markdown (mit Metadaten-Header: Dateiname, Seiten, Zeichen, ~Tokens)
-- **REST-API** für programmatischen Zugriff:
-  - `POST /extract` — PDF hochladen, Text + Metadaten als JSON zurückerhalten
-  - `GET /health` — Liveness-Check
-  - `GET /formats` — Unterstützte Dateiformate
-- **Eigenständiger Docker-Container** (`doc-extractor:latest`) mit eigener `docker-compose-extractor.yml` — unabhängig von anderen Services startbar
-- Nutzbar von jedem HTTP-Client: Browser, curl, Claude Code, OpenCode u.a.
+- **Browser UI** at `http://localhost:7643`: upload PDF via drag & drop or click, extract text, copy or save as file
+- **Output format selector**: Plaintext or Markdown (with metadata header: filename, pages, chars, ~tokens)
+- **REST API** for programmatic access:
+  - `POST /extract` — upload PDF, receive text + metadata as JSON
+  - `GET /health` — liveness check
+  - `GET /formats` — supported file formats
+- **Standalone Docker container** (`doc-extractor:latest`) with dedicated `docker-compose-extractor.yml` — startable independently of other services
+- Usable from any HTTP client: browser, curl, Claude Code, OpenCode, etc.
 
-### Geplant / Roadmap
+### Planned / Roadmap
 
-- MCP-Server-Integration (Claude Code Tool-Aufruf ohne curl)
-- DOCX-Support
-- Chunking-Endpoint `/chunk?max_tokens=N`
+- MCP server integration (native tool call from Claude Code without curl)
+- DOCX support
+- Chunking endpoint `/chunk?max_tokens=N`

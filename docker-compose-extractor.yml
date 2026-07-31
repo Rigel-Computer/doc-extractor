@@ -7,4 +7,7 @@ services:
       container_name: doc_extractor
       ports:
          - "7643:7643"
+      volumes:
+         - ./app.py:/app/app.py
+         - ./frontend:/app/frontend
       restart: unless-stopped

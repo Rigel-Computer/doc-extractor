@@ -75,7 +75,7 @@ async function extractPdf() {
         };
 
         document.getElementById('statsLine').textContent =
-            `${data.filename} · ${data.pages} Seiten · ${data.chars.toLocaleString('de')} Zeichen · ~${data.tokens.toLocaleString('de')} Tokens`;
+            `${data.filename} · ${data.pages} Seiten · ${data.chars.toLocaleString('de')} Zeichen · ~${data.estimated_tokens.toLocaleString('de')} Tokens`;
 
         document.getElementById('resultPanel').classList.remove('hidden');
         renderOutput();

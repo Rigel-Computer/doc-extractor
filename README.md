@@ -1,21 +1,23 @@
 # doc-extractor
 
-Eigenständiger Mikro-Service zur Text-Extraktion aus Dokumenten. Läuft als Docker-Container, unabhängig vom lokalen LLM-Setup.
+Lightweight Docker service to extract clean text from PDFs. Prevents context overflow when working with local LLMs. Browser UI + REST API. Built with FastAPI and pypdf.
+
+→ [Deutsche Version](README_DE.md)
 
 ## Motivation
 
-Lokale LLMs mit begrenztem VRAM (z.B. 16 GB) haben enge Kontext-Limits. Wird ein PDF direkt in ein Chat-Interface hochgeladen (z.B. das llama.cpp-Server-UI), landet der Rohdaten-Dump im Kontext und sprengt das Limit schnell. Dieser Service extrahiert zuerst den Reintext — das LLM bekommt nur was es wirklich braucht.
+Local LLMs with limited VRAM (e.g. 16 GB) have tight context limits. Uploading a PDF directly into a chat interface (e.g. the llama.cpp server UI) dumps raw binary data into the context and quickly blows the limit. This service extracts plain text first — the LLM only receives what it actually needs.
 
-## Browser-UI
+## Browser UI
 
-Nach dem Start direkt im Browser öffnen: **`http://localhost:7643`**
+Open in your browser after starting: **`http://localhost:7643`**
 
-- PDF per Drag & Drop oder Klick auswählen
-- „Extrahieren" → Text + Metadaten erscheinen
-- Ausgabeformat wählen: **Plaintext** oder **Markdown** (mit Metadaten-Header)
-- „In Zwischenablage" oder „Speichern" (.txt / .md)
+- Select a PDF via drag & drop or click
+- Click "Extract" → text and metadata appear
+- Choose output format: **Plaintext** or **Markdown** (with metadata header)
+- Copy to clipboard or save as `.txt` / `.md`
 
-## Voraussetzungen
+## Requirements
 
 - Docker + Docker Compose
 
@@ -40,17 +42,17 @@ docker-compose -f docker-compose-extractor.yml up -d --build
 ```
 
 ### `POST /extract`
-PDF hochladen, Text + Metadaten erhalten.
+Upload a PDF, receive extracted text and metadata.
 
 ```bash
 curl -X POST http://localhost:7643/extract \
-  -F "file=@dokument.pdf"
+  -F "file=@document.pdf"
 ```
 
-Antwort:
+Response:
 ```json
 {
-  "filename": "dokument.pdf",
+  "filename": "document.pdf",
   "pages": 12,
   "chars": 24800,
   "estimated_tokens": 6200,
@@ -58,19 +60,19 @@ Antwort:
 }
 ```
 
-Nur den Text ausgeben:
+Text only:
 ```bash
 curl -s -X POST http://localhost:7643/extract \
-  -F "file=@dokument.pdf" | jq -r .text
+  -F "file=@document.pdf" | jq -r .text
 ```
 
-### Nutzung mit Claude Code
+### Usage with Claude Code
 
 ```bash
 ! curl -s -X POST http://localhost:7643/extract -F "file=@doc.pdf" | jq -r .text
 ```
 
-Den zurückgegebenen Text direkt als Kontext in den nächsten Prompt einfügen.
+Paste the returned text directly as context into your next prompt.
 
 ## Logs & Management
 
@@ -79,8 +81,8 @@ docker-compose -f docker-compose-extractor.yml logs -f
 docker-compose -f docker-compose-extractor.yml down
 ```
 
-## Geplante Erweiterungen
+## Planned / Roadmap
 
-- **MCP-Server-Integration**: doc_extractor als MCP-Endpoint, damit Claude Code `/extract` als natives Tool aufrufen kann — ohne curl, direkt im Conversation-Flow
-- **DOCX-Support** via `python-docx`
-- **Chunking-Endpoint** `/chunk?max_tokens=N` für kontrollierte Kontextdosierung bei sehr langen Dokumenten
+- **MCP server integration**: expose `/extract` as a native tool for Claude Code — no curl needed
+- **DOCX support** via `python-docx`
+- **Chunking endpoint** `/chunk?max_tokens=N` for controlled context sizing on long documents
