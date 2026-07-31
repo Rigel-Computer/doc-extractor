@@ -5,6 +5,19 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.3] – 2026-07-31
+
+### Changed
+
+- Light UI theme: white cards on `#e8ecef` background with subtle shadows
+- Storm Cloud color scheme applied: blue-grey `#7a8fa8` as accent (header line, stats, primary button)
+- Drop zone visually separated with own background tint
+- Buttons now bold (`font-weight: 700`)
+- Subtitle text darker and larger for better readability
+- CSS rewritten without custom properties — plain hex values throughout
+
+---
+
 ## [1.0.2] – 2026-07-31
 
 ### Changed

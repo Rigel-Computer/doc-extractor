@@ -15,7 +15,7 @@ jinja/
 docs/
 temp/
 docs-alt/
-KW/
+KW*
 claude*
 
 command_history*
