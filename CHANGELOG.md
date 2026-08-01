@@ -5,6 +5,16 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.4] – 2026-08-01
+
+### Added
+
+- Language switcher DE/EN: English is default, preference persisted in `localStorage`
+- All UI strings centralised in a `TRANSLATIONS` object — single HTML template, texts injected at runtime via `data-i18n` attributes
+- Switcher displays only the inactive language as a clickable link (top-right header) — no flags
+
+---
+
 ## [1.0.3] – 2026-07-31
 
 ### Changed

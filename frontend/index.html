@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,18 +11,19 @@
       <header>
         <h1>doc-extractor</h1>
         <span class="subtitle">PDF → Text</span>
+        <span id="langBtn" class="lang-btn"></span>
       </header>
 
       <!-- Drop Zone -->
       <section class="section">
         <div id="dropZone" class="drop-zone">
           <span class="drop-icon">&#128196;</span>
-          <p class="drop-label">PDF hier ablegen oder klicken</p>
+          <p class="drop-label" data-i18n="dropLabel"></p>
           <input type="file" id="fileInput" accept=".pdf" hidden />
         </div>
         <div id="fileInfo" class="file-info hidden">
           <span id="fileName" class="file-name"></span>
-          <button id="extractBtn" class="btn btn-primary">Extrahieren</button>
+          <button id="extractBtn" class="btn btn-primary" data-i18n="extractBtn"></button>
         </div>
       </section>
 
@@ -30,15 +31,18 @@
       <section id="resultPanel" class="section hidden">
         <div class="result-header">
           <span id="statsLine" class="stats-line"></span>
-          <select id="formatSelect" class="format-select">
-            <option value="plain">Plaintext</option>
-            <option value="markdown">Markdown</option>
-          </select>
+          <div class="format-group">
+            <label for="formatSelect" class="format-label" data-i18n="formatLabel"></label>
+            <select id="formatSelect" class="format-select">
+              <option value="plain">Plaintext</option>
+              <option value="markdown">Markdown</option>
+            </select>
+          </div>
         </div>
         <textarea id="outputText" class="output-text" readonly></textarea>
         <div class="result-actions">
-          <button id="copyBtn" class="btn btn-secondary">In Zwischenablage</button>
-          <button id="downloadBtn" class="btn btn-secondary">Speichern</button>
+          <button id="copyBtn" class="btn btn-secondary" data-i18n="copyBtn"></button>
+          <button id="downloadBtn" class="btn btn-secondary" data-i18n="downloadBtn"></button>
           <span id="copyFeedback" class="copy-feedback"></span>
         </div>
       </section>
