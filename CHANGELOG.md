@@ -5,6 +5,15 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.5] – 2026-08-01
+
+### Added
+
+- Upload size limit: default 20 MB, configurable via `MAX_UPLOAD_MB` environment variable in `docker-compose-extractor.yml` — no rebuild required
+- Security notes in README (EN + DE): network exposure via `0.0.0.0`, no credentials, no shell access
+
+---
+
 ## [1.0.4] – 2026-08-01
 
 ### Added

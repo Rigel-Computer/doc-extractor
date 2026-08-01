@@ -1,7 +1,10 @@
 import io
+import os
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pypdf import PdfReader
+
+MAX_UPLOAD_BYTES = int(os.getenv("MAX_UPLOAD_MB", "20")) * 1024 * 1024
 
 app = FastAPI(title="doc-extractor", version="1.0.0")
 
@@ -22,6 +25,8 @@ async def extract(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Nur PDF unterstützt")
 
     data = await file.read()
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail=f"File too large (max {MAX_UPLOAD_BYTES // 1024 // 1024} MB)")
     try:
         reader = PdfReader(io.BytesIO(data))
     except Exception as e:

@@ -79,6 +79,23 @@ docker-compose -f docker-compose-extractor.yml logs -f
 docker-compose -f docker-compose-extractor.yml down
 ```
 
+## Konfiguration
+
+Das Upload-Größenlimit lässt sich per Umgebungsvariable in der `docker-compose-extractor.yml` anpassen:
+
+```yaml
+environment:
+  - MAX_UPLOAD_MB=20   # Standard: 20 MB
+```
+
+Einfach erhöhen, wenn regelmäßig größere Dokumente verarbeitet werden.
+
+## Sicherheitshinweise
+
+- **Netzwerk-Exposition**: Der Service bindet auf `0.0.0.0` — er ist im lokalen Netzwerk erreichbar, nicht nur auf `localhost`. In gemeinsam genutzten Netzwerken (Büro, WLAN) kann jeder im gleichen Netz Port 7643 ansprechen. Keine Authentifizierung by design (lokales Tool). Bei Bedarf per Firewall absichern oder in der Compose-Datei auf `127.0.0.1` beschränken.
+- **Keine Credentials**: Es werden keine sensiblen Daten gespeichert oder übertragen.
+- **Kein Shell-Zugriff**: pypdf ist reines Python — kein Risiko durch nativen Code.
+
 ## Geplante Erweiterungen
 
 - **MCP-Server-Integration**: doc_extractor als MCP-Endpoint, damit Claude Code `/extract` als natives Tool aufrufen kann — ohne curl, direkt im Conversation-Flow
