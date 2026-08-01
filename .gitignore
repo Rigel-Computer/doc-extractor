@@ -2,6 +2,11 @@
 # Last modified: 17.02.2025 13:57 MEZ
 
 # Project-specific files to ignore
+
+# Batch output — private documents, never commit
+frontend/batch/originals/
+frontend/batch/results/
+
 doc-extractor/
 DEVLOG.md
 footer-info-section.html
@@ -89,3 +94,5 @@ ocr_core/learned_*.txt
 *.diff
 *.patch
 *.orig
+
+

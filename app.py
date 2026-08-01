@@ -1,5 +1,7 @@
 import io
 import os
+from pathlib import Path
+from typing import List
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pypdf import PdfReader
@@ -42,6 +44,66 @@ async def extract(file: UploadFile = File(...)):
         "estimated_tokens": len(text) // 4,
         "text": text,
     }
+
+
+BATCH_ORIGINALS = Path("frontend/batch/originals")
+BATCH_RESULTS = Path("frontend/batch/results")
+
+
+@app.post("/batch")
+async def batch_extract(files: List[UploadFile] = File(...)):
+    BATCH_ORIGINALS.mkdir(parents=True, exist_ok=True)
+    BATCH_RESULTS.mkdir(parents=True, exist_ok=True)
+
+    results = []
+    for file in files:
+        filename = file.filename or "unknown.pdf"
+
+        if not filename.lower().endswith(".pdf"):
+            results.append({"filename": filename, "status": "skipped", "reason": "not a pdf"})
+            continue
+
+        original_path = BATCH_ORIGINALS / filename
+        if original_path.exists():
+            results.append({"filename": filename, "status": "skipped", "reason": "already processed"})
+            continue
+
+        data = await file.read()
+        if len(data) > MAX_UPLOAD_BYTES:
+            results.append({"filename": filename, "status": "error", "reason": f"too large (max {MAX_UPLOAD_BYTES // 1024 // 1024} MB)"})
+            continue
+
+        try:
+            reader = PdfReader(io.BytesIO(data))
+        except Exception as e:
+            results.append({"filename": filename, "status": "error", "reason": str(e)})
+            continue
+
+        parts = [p.extract_text() for p in reader.pages if p.extract_text()]
+        text = "\n\n".join(parts)
+        pages = len(reader.pages)
+        chars = len(text)
+        tokens = chars // 4
+
+        original_path.write_bytes(data)
+
+        stem = Path(filename).stem
+        md = (
+            f"**Document:** {filename}  \n"
+            f"**Pages:** {pages} · **Characters:** {chars:,} · **~Tokens:** {tokens:,}\n\n---\n\n"
+            f"{text}"
+        )
+        (BATCH_RESULTS / f"{stem}.md").write_text(md, encoding="utf-8")
+
+        results.append({
+            "filename": filename,
+            "status": "processed",
+            "pages": pages,
+            "chars": chars,
+            "estimated_tokens": tokens,
+        })
+
+    return {"results": results}
 
 
 app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")

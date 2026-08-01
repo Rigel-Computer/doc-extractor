@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>doc-extractor · Batch</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <h1>doc-extractor</h1>
+        <span class="subtitle">PDF → Text</span>
+        <div class="header-actions">
+          <a href="index.html" class="nav-btn" id="navSingleBtn"></a>
+          <span id="langBtn" class="lang-btn"></span>
+        </div>
+      </header>
+
+      <!-- Drop Zone -->
+      <section class="section">
+        <div id="dropZone" class="drop-zone">
+          <span class="drop-icon">&#128196;</span>
+          <p class="drop-label" data-i18n="dropLabel"></p>
+          <input type="file" id="fileInput" accept=".pdf" multiple hidden />
+        </div>
+        <div id="fileInfo" class="file-info hidden">
+          <span id="fileCount" class="file-name"></span>
+          <button id="batchBtn" class="btn btn-primary" data-i18n="batchBtn"></button>
+        </div>
+      </section>
+
+      <!-- Results Table -->
+      <section id="resultsPanel" class="section hidden">
+        <table class="batch-table">
+          <thead>
+            <tr>
+              <th data-i18n="colFile"></th>
+              <th data-i18n="colStatus"></th>
+              <th data-i18n="colPages"></th>
+              <th data-i18n="colChars"></th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </section>
+
+      <div id="toast" class="toast hidden"></div>
+    </div>
+
+    <script src="batch.js"></script>
+  </body>
+</html>

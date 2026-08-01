@@ -12,10 +12,17 @@ Local LLMs with limited VRAM (e.g. 16 GB) have tight context limits. Uploading a
 
 Open in your browser after starting: **`http://localhost:7643`**
 
+**Single mode** (default):
 - Select a PDF via drag & drop or click
 - Click "Extract" → text and metadata appear
 - Choose output format: **Plaintext** or **Markdown** (with metadata header)
 - Copy to clipboard or save as `.txt` / `.md`
+
+**Batch mode** — click "Batch" in the top-right corner, or go to `http://localhost:7643/batch.html`:
+- Drop multiple PDFs at once
+- Click "Process all" → each PDF is extracted and saved as `.md`
+- Originals are stored in `frontend/batch/originals/` — already-processed files are automatically skipped on re-run
+- Extracts land in `frontend/batch/results/` — ready to feed into a local LLM
 
 ## Requirements
 
@@ -39,6 +46,25 @@ docker-compose -f docker-compose-extractor.yml up -d --build
 ### `GET /formats`
 ```json
 {"supported": ["pdf"]}
+```
+
+### `POST /batch`
+Upload multiple PDFs, extract all, save results to disk.
+
+```bash
+curl -X POST http://localhost:7643/batch \
+  -F "files=@invoice1.pdf" \
+  -F "files=@invoice2.pdf"
+```
+
+Response:
+```json
+{
+  "results": [
+    {"filename": "invoice1.pdf", "status": "processed", "pages": 2, "chars": 3400, "estimated_tokens": 850},
+    {"filename": "invoice2.pdf", "status": "skipped", "reason": "already processed"}
+  ]
+}
 ```
 
 ### `POST /extract`
@@ -103,3 +129,4 @@ Set higher if you regularly work with large documents.
 - **MCP server integration**: expose `/extract` as a native tool for Claude Code — no curl needed
 - **DOCX support** via `python-docx`
 - **Chunking endpoint** `/chunk?max_tokens=N` for controlled context sizing on long documents
+- **LLM matching**: feed batch results + bank CSV into a local LLM to generate structured output (e.g. for tax accounting)

@@ -5,6 +5,19 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.6] – 2026-08-01
+
+### Added
+
+- **Batch mode** UI at `http://localhost:7643/batch.html`: drop multiple PDFs, extract all in one click
+- **`POST /batch`** API endpoint: accepts multiple files, returns per-file status (processed / skipped / error)
+- Deduplication: originals saved to `frontend/batch/originals/` — already-processed files are skipped automatically on re-run
+- Extracts saved as `.md` to `frontend/batch/results/` — one file per PDF, named after the original
+- Navigation link between Single and Batch mode (top-right header, both pages)
+- DE/EN language switcher carried over to batch page, shared `localStorage` preference
+
+---
+
 ## [1.0.5] – 2026-08-01
 
 ### Added

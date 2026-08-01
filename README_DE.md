@@ -10,10 +10,17 @@ Lokale LLMs mit begrenztem VRAM (z.B. 16 GB) haben enge Kontext-Limits. Wird ein
 
 Nach dem Start direkt im Browser öffnen: **`http://localhost:7643`**
 
+**Einzelmodus** (Standard):
 - PDF per Drag & Drop oder Klick auswählen
 - „Extrahieren" → Text + Metadaten erscheinen
 - Ausgabeformat wählen: **Plaintext** oder **Markdown** (mit Metadaten-Header)
 - „In Zwischenablage" oder „Speichern" (.txt / .md)
+
+**Batch-Modus** — oben rechts auf „Batch" klicken oder `http://localhost:7643/batch.html` aufrufen:
+- Mehrere PDFs gleichzeitig ablegen
+- „Alle verarbeiten" → jedes PDF wird extrahiert und als `.md` gespeichert
+- Originale landen in `frontend/batch/originals/` — bereits verarbeitete Dateien werden bei erneutem Aufruf automatisch übersprungen
+- Extrakte landen in `frontend/batch/results/` — bereit für die Übergabe an ein lokales LLM
 
 ## Voraussetzungen
 
@@ -37,6 +44,25 @@ docker-compose -f docker-compose-extractor.yml up -d --build
 ### `GET /formats`
 ```json
 {"supported": ["pdf"]}
+```
+
+### `POST /batch`
+Mehrere PDFs hochladen, alle extrahieren, Ergebnisse auf Disk speichern.
+
+```bash
+curl -X POST http://localhost:7643/batch \
+  -F "files=@rechnung1.pdf" \
+  -F "files=@rechnung2.pdf"
+```
+
+Antwort:
+```json
+{
+  "results": [
+    {"filename": "rechnung1.pdf", "status": "processed", "pages": 2, "chars": 3400, "estimated_tokens": 850},
+    {"filename": "rechnung2.pdf", "status": "skipped", "reason": "already processed"}
+  ]
+}
 ```
 
 ### `POST /extract`
@@ -101,3 +127,4 @@ Einfach erhöhen, wenn regelmäßig größere Dokumente verarbeitet werden.
 - **MCP-Server-Integration**: doc_extractor als MCP-Endpoint, damit Claude Code `/extract` als natives Tool aufrufen kann — ohne curl, direkt im Conversation-Flow
 - **DOCX-Support** via `python-docx`
 - **Chunking-Endpoint** `/chunk?max_tokens=N` für kontrollierte Kontextdosierung bei sehr langen Dokumenten
+- **LLM-Matching**: Batch-Extrakte + Bank-CSV an lokales LLM übergeben, strukturierten Output erzeugen (z.B. für die Steuererklärung)
