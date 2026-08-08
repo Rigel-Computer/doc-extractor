@@ -4,7 +4,7 @@ Eigenständiger Mikro-Service zur Text-Extraktion aus Dokumenten. Läuft als Doc
 
 ## Motivation
 
-Lokale LLMs mit begrenztem VRAM (z.B. 16 GB) haben enge Kontext-Limits. Wird ein PDF direkt in ein Chat-Interface hochgeladen (z.B. das llama.cpp-Server-UI), landet der Rohdaten-Dump im Kontext und sprengt das Limit schnell. Dieser Service extrahiert zuerst den Reintext — das LLM bekommt nur was es wirklich braucht.
+Lokale LLMs mit begrenztem VRAM (z.B. 16 GB) haben enge Kontext-Limits. Wird ein PDF direkt in ein Chat-Interface hochgeladen (z.B. das llama.cpp-Server-UI), landet der Rohdaten-Dump im Kontext und sprengt das Limit schnell. Dieser Service extrahiert zuerst den Reintext - das LLM bekommt nur was es wirklich braucht.
 
 ## Browser-UI
 
@@ -16,11 +16,11 @@ Nach dem Start direkt im Browser öffnen: **`http://localhost:7643`**
 - Ausgabeformat wählen: **Plaintext** oder **Markdown** (mit Metadaten-Header)
 - „In Zwischenablage" oder „Speichern" (.txt / .md)
 
-**Batch-Modus** — oben rechts auf „Batch" klicken oder `http://localhost:7643/batch.html` aufrufen:
+**Batch-Modus** - oben rechts auf „Batch" klicken oder `http://localhost:7643/batch.html` aufrufen:
 - Mehrere PDFs gleichzeitig ablegen
 - „Alle verarbeiten" → jedes PDF wird extrahiert und als `.md` gespeichert
-- Originale landen in `frontend/batch/originals/` — bereits verarbeitete Dateien werden bei erneutem Aufruf automatisch übersprungen
-- Extrakte landen in `frontend/batch/results/` — bereit für die Übergabe an ein lokales LLM
+- Originale landen in `frontend/batch/originals/` - bereits verarbeitete Dateien werden bei erneutem Aufruf automatisch übersprungen
+- Extrakte landen in `frontend/batch/results/` - bereit für die Übergabe an ein lokales LLM
 
 ## Voraussetzungen
 
@@ -118,13 +118,13 @@ Einfach erhöhen, wenn regelmäßig größere Dokumente verarbeitet werden.
 
 ## Sicherheitshinweise
 
-- **Netzwerk-Exposition**: Der Service bindet auf `0.0.0.0` — er ist im lokalen Netzwerk erreichbar, nicht nur auf `localhost`. In gemeinsam genutzten Netzwerken (Büro, WLAN) kann jeder im gleichen Netz Port 7643 ansprechen. Keine Authentifizierung by design (lokales Tool). Bei Bedarf per Firewall absichern oder in der Compose-Datei auf `127.0.0.1` beschränken.
+- **Netzwerk-Exposition**: Der Service bindet auf `0.0.0.0` - er ist im lokalen Netzwerk erreichbar, nicht nur auf `localhost`. In gemeinsam genutzten Netzwerken (Büro, WLAN) kann jeder im gleichen Netz Port 7643 ansprechen. Keine Authentifizierung by design (lokales Tool). Bei Bedarf per Firewall absichern oder in der Compose-Datei auf `127.0.0.1` beschränken.
 - **Keine Credentials**: Es werden keine sensiblen Daten gespeichert oder übertragen.
-- **Kein Shell-Zugriff**: pypdf ist reines Python — kein Risiko durch nativen Code.
+- **Kein Shell-Zugriff**: pypdf ist reines Python - kein Risiko durch nativen Code.
 
 ## Geplante Erweiterungen
 
-- **MCP-Server-Integration**: doc_extractor als MCP-Endpoint, damit Claude Code `/extract` als natives Tool aufrufen kann — ohne curl, direkt im Conversation-Flow
+- **MCP-Server-Integration**: doc_extractor als MCP-Endpoint, damit Claude Code `/extract` als natives Tool aufrufen kann - ohne curl, direkt im Conversation-Flow
 - **DOCX-Support** via `python-docx`
 - **Chunking-Endpoint** `/chunk?max_tokens=N` für kontrollierte Kontextdosierung bei sehr langen Dokumenten
 - **LLM-Matching**: Batch-Extrakte + Bank-CSV an lokales LLM übergeben, strukturierten Output erzeugen (z.B. für die Steuererklärung)
