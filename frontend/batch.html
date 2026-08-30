@@ -17,8 +17,48 @@
         </div>
       </header>
 
+      <!-- Session Screen (shown before a session is active) -->
+      <section id="sessionScreen" class="section">
+
+        <!-- Resume card (shown when a previous session exists) -->
+        <div id="resumePanel" class="hidden">
+          <p class="session-screen-label" data-i18n="lastSession"></p>
+          <p id="resumeSessionName" class="session-screen-name"></p>
+          <p id="resumeSessionMeta" class="session-screen-meta"></p>
+          <div class="session-screen-actions">
+            <button id="resumeBtn" class="btn btn-primary" data-i18n="resumeBtn"></button>
+            <button id="toNewSessionBtn" class="btn btn-secondary" data-i18n="newSessionBtn"></button>
+          </div>
+        </div>
+
+        <!-- New session form -->
+        <div id="newSessionPanel">
+          <p class="session-screen-heading" data-i18n="newSessionHeading"></p>
+          <p class="session-screen-hint" data-i18n="newSessionHint"></p>
+          <p class="session-screen-label" data-i18n="newSessionLabel"></p>
+          <div class="session-input-row">
+            <input type="text" id="sessionNameInput" class="session-input"
+                   data-i18n-placeholder="newSessionPlaceholder" />
+            <button id="startSessionBtn" class="btn btn-primary" data-i18n="startSessionBtn"></button>
+          </div>
+
+          <!-- Previous sessions list (visible when switching) -->
+          <div id="prevSessionsPanel" class="hidden">
+            <p class="session-screen-label" style="margin-top:1.25rem" data-i18n="prevSessions"></p>
+            <ul id="prevSessionsList" class="session-history"></ul>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Active session bar (shown when a session is active) -->
+      <div id="activeSessionBar" class="session-bar hidden">
+        <span data-i18n="currentSession"></span>: <strong id="activeSessionName"></strong>
+        <a id="switchSessionBtn" href="#" class="nav-btn" data-i18n="switchSession"></a>
+      </div>
+
       <!-- Drop Zone -->
-      <section class="section">
+      <section id="uploadSection" class="section hidden">
         <div id="dropZone" class="drop-zone">
           <span class="drop-icon">&#128196;</span>
           <p class="drop-label" data-i18n="dropLabel"></p>

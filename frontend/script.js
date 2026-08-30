@@ -17,6 +17,7 @@ const TRANSLATIONS = {
         errFile:     'Only PDF files are supported',
         errConn:     'Connection error',
         errExtract:  'Extraction failed',
+        pageHint:    'For a single document. Use the Batch button for multiple documents.',
         langSwitch:  'Deutsch',
     },
     de: {
@@ -37,6 +38,7 @@ const TRANSLATIONS = {
         errFile:     'Nur PDF-Dateien werden unterstützt',
         errConn:     'Verbindungsfehler',
         errExtract:  'Fehler beim Extrahieren',
+        pageHint:    'Formular für ein einzelnes Dokument. Batch-Button nutzen für mehrere Dokumente.',
         langSwitch:  'English',
     },
 };

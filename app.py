@@ -1,8 +1,9 @@
 import io
 import os
+import re
 from pathlib import Path
 from typing import List
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pypdf import PdfReader
 
@@ -46,14 +47,13 @@ async def extract(file: UploadFile = File(...)):
     }
 
 
-BATCH_ORIGINALS = Path("frontend/batch/originals")
-BATCH_RESULTS = Path("frontend/batch/results")
-
-
 @app.post("/batch")
-async def batch_extract(files: List[UploadFile] = File(...)):
-    BATCH_ORIGINALS.mkdir(parents=True, exist_ok=True)
-    BATCH_RESULTS.mkdir(parents=True, exist_ok=True)
+async def batch_extract(session: str = Form("default"), files: List[UploadFile] = File(...)):
+    session_slug = re.sub(r'[^\w\-]', '-', session).strip('-')[:64] or 'default'
+    batch_originals = Path(f"frontend/batch/{session_slug}/originals")
+    batch_results   = Path(f"frontend/batch/{session_slug}/results")
+    batch_originals.mkdir(parents=True, exist_ok=True)
+    batch_results.mkdir(parents=True, exist_ok=True)
 
     results = []
     for file in files:
@@ -63,7 +63,7 @@ async def batch_extract(files: List[UploadFile] = File(...)):
             results.append({"filename": filename, "status": "skipped", "reason": "not a pdf"})
             continue
 
-        original_path = BATCH_ORIGINALS / filename
+        original_path = batch_originals / filename
         if original_path.exists():
             results.append({"filename": filename, "status": "skipped", "reason": "already processed"})
             continue
@@ -93,7 +93,7 @@ async def batch_extract(files: List[UploadFile] = File(...)):
             f"**Pages:** {pages} · **Characters:** {chars:,} · **~Tokens:** {tokens:,}\n\n---\n\n"
             f"{text}"
         )
-        (BATCH_RESULTS / f"{stem}.md").write_text(md, encoding="utf-8")
+        (batch_results / f"{stem}.md").write_text(md, encoding="utf-8")
 
         results.append({
             "filename": filename,

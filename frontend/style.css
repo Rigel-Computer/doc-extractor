@@ -284,3 +284,141 @@ h1 {
 .col-status.processed { color: #4a8a6a; }
 .col-status.skipped   { color: #7a8fa8; }
 .col-status.error     { color: #c47a7a; }
+
+/* Page hint */
+.page-hint {
+   font-size: 0.8rem;
+   color: #9aaabb;
+   margin-top: -0.5rem;
+   margin-bottom: 1.25rem;
+}
+
+/* Session screen */
+.session-screen-heading {
+   font-size: 1.1rem;
+   font-weight: 700;
+   color: #2d3035;
+   margin-bottom: 0.35rem;
+}
+
+.session-screen-hint {
+   font-size: 0.88rem;
+   color: #6b7580;
+   margin-bottom: 1.25rem;
+}
+
+.session-screen-label {
+   font-size: 0.78rem;
+   font-weight: 600;
+   color: #7a8fa8;
+   text-transform: uppercase;
+   letter-spacing: 0.05em;
+   margin-bottom: 0.4rem;
+}
+
+.session-screen-name {
+   font-size: 1.15rem;
+   font-weight: 700;
+   color: #2d3035;
+   margin-bottom: 0.25rem;
+}
+
+.session-screen-meta {
+   font-size: 0.85rem;
+   color: #6b7580;
+   margin-bottom: 1rem;
+}
+
+.session-screen-actions {
+   display: flex;
+   gap: 0.75rem;
+}
+
+.session-input-row {
+   display: flex;
+   gap: 0.75rem;
+   align-items: center;
+}
+
+.session-input {
+   flex: 1;
+   padding: 0.5rem 0.75rem;
+   border: 1px solid #c8d0d8;
+   border-radius: 6px;
+   font-size: 0.9rem;
+   color: #2d3035;
+   background: #f6f8fa;
+}
+
+.session-input:focus {
+   outline: none;
+   border-color: #7a8fa8;
+   background: #ffffff;
+}
+
+/* Active session bar */
+.session-bar {
+   display: flex;
+   align-items: center;
+   gap: 0.75rem;
+   padding: 0.55rem 1rem;
+   background: #f6f8fa;
+   border: 1px solid #c8d0d8;
+   border-radius: 8px;
+   margin-bottom: 1.25rem;
+   font-size: 0.88rem;
+   color: #4a5a6a;
+}
+
+.session-bar strong {
+   color: #2d3035;
+}
+
+.session-bar .nav-btn {
+   margin-left: auto;
+}
+
+/* Previous sessions list */
+.session-history {
+   list-style: none;
+   margin-top: 0.4rem;
+}
+
+.session-history-item {
+   display: flex;
+   align-items: baseline;
+   gap: 0.75rem;
+   padding: 0.45rem 0;
+   border-bottom: 1px solid #e8ecef;
+   font-size: 0.88rem;
+}
+
+.session-history-item:last-child {
+   border-bottom: none;
+}
+
+.session-history-name {
+   font-weight: 600;
+   color: #2d3035;
+   flex: 1;
+}
+
+.session-history-meta {
+   color: #6b7580;
+   font-size: 0.82rem;
+}
+
+.btn-link {
+   background: none;
+   border: none;
+   color: #7a8fa8;
+   cursor: pointer;
+   font-size: 0.82rem;
+   text-decoration: underline;
+   text-underline-offset: 3px;
+   padding: 0;
+}
+
+.btn-link:hover {
+   color: #5f7a96;
+}
