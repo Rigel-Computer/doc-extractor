@@ -19,10 +19,11 @@ Open in your browser after starting: **`http://localhost:7643`**
 - Copy to clipboard or save as `.txt` / `.md`
 
 **Batch mode** - click "Batch" in the top-right corner, or go to `http://localhost:7643/batch.html`:
-- Drop multiple PDFs at once
-- Click "Process all" → each PDF is extracted and saved as `.md`
-- Originals are stored in `frontend/batch/originals/` - already-processed files are automatically skipped on re-run
-- Extracts land in `frontend/batch/results/` - ready to feed into a local LLM
+- Give the task a name (e.g. `Invoices-Q1-2026`) - becomes the session
+- Drop multiple PDFs at once, click "Process all"
+- Already-processed files are automatically skipped - add newly scanned documents to an existing session without duplicates
+- Originals and extracts are stored per session under `frontend/batch/{session}/originals/` and `.../results/`
+- On next visit: resume the last session or start a new one
 
 ## Requirements
 
@@ -49,10 +50,11 @@ docker-compose -f docker-compose-extractor.yml up -d --build
 ```
 
 ### `POST /batch`
-Upload multiple PDFs, extract all, save results to disk.
+Upload multiple PDFs, extract all, save results to disk. The optional `session` parameter groups files into named subdirectories.
 
 ```bash
 curl -X POST http://localhost:7643/batch \
+  -F "session=Invoices-Q1-2026" \
   -F "files=@invoice1.pdf" \
   -F "files=@invoice2.pdf"
 ```
@@ -66,6 +68,8 @@ Response:
   ]
 }
 ```
+
+Files are stored under `frontend/batch/{session}/originals/` and `frontend/batch/{session}/results/`. Default session name is `default`.
 
 ### `POST /extract`
 Upload a PDF, receive extracted text and metadata.

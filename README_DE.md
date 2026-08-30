@@ -17,10 +17,11 @@ Nach dem Start direkt im Browser öffnen: **`http://localhost:7643`**
 - „In Zwischenablage" oder „Speichern" (.txt / .md)
 
 **Batch-Modus** - oben rechts auf „Batch" klicken oder `http://localhost:7643/batch.html` aufrufen:
-- Mehrere PDFs gleichzeitig ablegen
-- „Alle verarbeiten" → jedes PDF wird extrahiert und als `.md` gespeichert
-- Originale landen in `frontend/batch/originals/` - bereits verarbeitete Dateien werden bei erneutem Aufruf automatisch übersprungen
-- Extrakte landen in `frontend/batch/results/` - bereit für die Übergabe an ein lokales LLM
+- Der Aufgabe einen Namen geben (z.B. `Rechnungen-Q1-2026`) - wird zur Sitzung
+- Mehrere PDFs ablegen, „Alle verarbeiten" klicken
+- Bereits verarbeitete Dateien werden automatisch übersprungen - nachträglich eingescannte Dokumente einfach zur bestehenden Sitzung hinzufügen
+- Originale und Extrakte landen pro Sitzung unter `frontend/batch/{sitzung}/originals/` und `.../results/`
+- Beim nächsten Besuch: letzte Sitzung fortsetzen oder neue starten
 
 ## Voraussetzungen
 
@@ -47,10 +48,11 @@ docker-compose -f docker-compose-extractor.yml up -d --build
 ```
 
 ### `POST /batch`
-Mehrere PDFs hochladen, alle extrahieren, Ergebnisse auf Disk speichern.
+Mehrere PDFs hochladen, alle extrahieren, Ergebnisse auf Disk speichern. Der optionale Parameter `session` gruppiert Dateien in benannte Unterordner.
 
 ```bash
 curl -X POST http://localhost:7643/batch \
+  -F "session=Rechnungen-Q1-2026" \
   -F "files=@rechnung1.pdf" \
   -F "files=@rechnung2.pdf"
 ```
@@ -64,6 +66,8 @@ Antwort:
   ]
 }
 ```
+
+Dateien werden unter `frontend/batch/{session}/originals/` und `frontend/batch/{session}/results/` gespeichert. Standard-Sitzungsname ist `default`.
 
 ### `POST /extract`
 PDF hochladen, Text + Metadaten erhalten.
