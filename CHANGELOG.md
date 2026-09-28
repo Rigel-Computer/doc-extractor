@@ -5,6 +5,31 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [1.0.7] – 2026-09-28
+
+### Added
+
+- **Date prefix for extracts**: optional `dd.mm.yyyy_` in front of every output file, switched by a "Prepend date" checkbox - available in both Single and Batch mode, preference shared via `localStorage`
+- The date is resolved in a cascade: PDF `/CreationDate` → file date from the client → today. Metadata years outside 1990…current+1 are discarded (some scanners write 1904 or 1970 defaults)
+- **`POST /batch`** accepts two new form fields: `prefix_date` (bool, default `false`) and `mtimes` (one entry per file, same order as `files`)
+- **`POST /extract`** accepts an optional `mtime` form field and returns the resolved `doc_date`
+- Batch results carry `output` - the file name actually written to `results/`
+
+### Changed
+
+- Batch result table shows the written file name instead of the uploaded one, so the date prefix is visible right after the run
+
+### Fixed
+
+- Port mapping in `docker-compose-extractor.yml` was `7043:7043` while uvicorn listens on `7643` - the service would have come back unreachable on the next restart. Set back to `7643:7643`.
+
+### Notes
+
+- Originals in `originals/` deliberately keep their uploaded name: it is the key for the duplicate check. Prefixing them would re-process every document as soon as the checkbox is toggled.
+- A file's creation date is not visible to the server - an upload carries only bytes and a filename. The browser sends `File.lastModified` along.
+
+---
+
 ## [1.0.6] – 2026-08-01
 
 ### Added

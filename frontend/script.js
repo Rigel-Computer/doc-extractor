@@ -18,6 +18,7 @@ const TRANSLATIONS = {
         errConn:     'Connection error',
         errExtract:  'Extraction failed',
         pageHint:    'For a single document. Use the Batch button for multiple documents.',
+        prefixDate:  'Prepend date',
         langSwitch:  'Deutsch',
     },
     de: {
@@ -39,6 +40,7 @@ const TRANSLATIONS = {
         errConn:     'Verbindungsfehler',
         errExtract:  'Fehler beim Extrahieren',
         pageHint:    'Formular für ein einzelnes Dokument. Batch-Button nutzen für mehrere Dokumente.',
+        prefixDate:  'Datum voranstellen',
         langSwitch:  'English',
     },
 };
@@ -78,6 +80,14 @@ function updateStatsLine() {
 document.addEventListener('DOMContentLoaded', () => {
     applyLanguage(currentLang);
     setupDropZone();
+
+    // gleicher Key wie im Batch-Modus – die Einstellung gilt fuer beide Seiten
+    const prefixBox = document.getElementById('prefixDate');
+    prefixBox.checked = localStorage.getItem('docExtractorPrefixDate') === '1';
+    prefixBox.addEventListener('change', () => {
+        localStorage.setItem('docExtractorPrefixDate', prefixBox.checked ? '1' : '0');
+    });
+
     document.getElementById('extractBtn').addEventListener('click', extractPdf);
     document.getElementById('formatSelect').addEventListener('change', renderOutput);
     document.getElementById('copyBtn').addEventListener('click', copyText);
@@ -136,6 +146,7 @@ async function extractPdf() {
     try {
         const fd = new FormData();
         fd.append('file', file);
+        fd.append('mtime', String(file.lastModified || ''));
         const r = await fetch('/extract', { method: 'POST', body: fd });
         const data = await r.json();
 
@@ -147,6 +158,7 @@ async function extractPdf() {
         rawText = data.text;
         extractedMeta = {
             filename: data.filename,
+            docDate: data.doc_date,
             pages: data.pages,
             chars: data.chars,
             tokens: data.estimated_tokens,
@@ -198,7 +210,10 @@ function downloadFile() {
     const format = document.getElementById('formatSelect').value;
     const text = formatText(format);
     const ext = format === 'markdown' ? 'md' : 'txt';
-    const base = (extractedMeta.filename || 'extract').replace(/\.pdf$/i, '');
+    let base = (extractedMeta.filename || 'extract').replace(/\.pdf$/i, '');
+    if (document.getElementById('prefixDate').checked && extractedMeta.docDate) {
+        base = `${extractedMeta.docDate}_${base}`;
+    }
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);

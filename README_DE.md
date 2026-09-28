@@ -22,6 +22,7 @@ Nach dem Start direkt im Browser öffnen: **`http://localhost:7643`**
 - Bereits verarbeitete Dateien werden automatisch übersprungen - nachträglich eingescannte Dokumente einfach zur bestehenden Sitzung hinzufügen
 - Originale und Extrakte landen pro Sitzung unter `frontend/batch/{sitzung}/originals/` und `.../results/`
 - Beim nächsten Besuch: letzte Sitzung fortsetzen oder neue starten
+- **„Datum voranstellen"**: setzt `dd.mm.jjjj_` vor jeden Extrakt — der Results-Ordner liest sich dann wie ein Aktenordner
 
 ## Voraussetzungen
 
@@ -50,9 +51,17 @@ docker-compose -f docker-compose-extractor.yml up -d --build
 ### `POST /batch`
 Mehrere PDFs hochladen, alle extrahieren, Ergebnisse auf Disk speichern. Der optionale Parameter `session` gruppiert Dateien in benannte Unterordner.
 
+| Feld          | Typ      | Standard  | Zweck                                                           |
+| ------------- | -------- | --------- | --------------------------------------------------------------- |
+| `files`       | file[]   | Pflicht   | Die PDFs                                                          |
+| `session`     | string   | `default` | Name des Unterordners, bereinigt auf `\w` und `-`, max. 64 Zeichen |
+| `prefix_date` | bool     | `false`   | `dd.mm.jjjj_` vor jeden Extrakt setzen                            |
+| `mtimes`      | string[] | –         | Dateidatum in Millisekunden, eins pro Datei, **gleiche Reihenfolge wie `files`** |
+
 ```bash
 curl -X POST http://localhost:7643/batch \
   -F "session=Rechnungen-Q1-2026" \
+  -F "prefix_date=true" \
   -F "files=@rechnung1.pdf" \
   -F "files=@rechnung2.pdf"
 ```
@@ -61,13 +70,15 @@ Antwort:
 ```json
 {
   "results": [
-    {"filename": "rechnung1.pdf", "status": "processed", "pages": 2, "chars": 3400, "estimated_tokens": 850},
+    {"filename": "rechnung1.pdf", "output": "14.03.2026_rechnung1.md", "status": "processed", "pages": 2, "chars": 3400, "estimated_tokens": 850},
     {"filename": "rechnung2.pdf", "status": "skipped", "reason": "already processed"}
   ]
 }
 ```
 
 Dateien werden unter `frontend/batch/{session}/originals/` und `frontend/batch/{session}/results/` gespeichert. Standard-Sitzungsname ist `default`.
+
+**Zum Datum**: Es wird als Kaskade ermittelt — zuerst das `/CreationDate` aus dem PDF, dann `mtimes`, zuletzt heute. Der Server sieht das Erstell-Datum einer Datei nicht; beim Upload kommen nur Bytes und Dateiname an, deshalb gibt es `mtimes`. Die Originale behalten in jedem Fall ihren hochgeladenen Namen — der ist der Schlüssel für die Dubletten-Prüfung.
 
 ### `POST /extract`
 PDF hochladen, Text + Metadaten erhalten.
@@ -77,10 +88,13 @@ curl -X POST http://localhost:7643/extract \
   -F "file=@dokument.pdf"
 ```
 
+Optionales Form-Feld `mtime` (Dateidatum in Millisekunden) speist dieselbe Datums-Kaskade.
+
 Antwort:
 ```json
 {
   "filename": "dokument.pdf",
+  "doc_date": "14.03.2026",
   "pages": 12,
   "chars": 24800,
   "estimated_tokens": 6200,

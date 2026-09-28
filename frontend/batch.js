@@ -27,6 +27,8 @@ const TRANSLATIONS = {
         openSession:           'Open',
         started:               'Started',
         lastUsed:              'Last used',
+        prefixDate:            'Prepend date',
+        prefixDateHint:        'dd.mm.yyyy_ in front of each extract – from the PDF metadata, otherwise the file date',
     },
     de: {
         dropLabel:             'PDFs hier ablegen oder klicken',
@@ -56,11 +58,14 @@ const TRANSLATIONS = {
         openSession:           'Öffnen',
         started:               'Begonnen',
         lastUsed:              'Zuletzt',
+        prefixDate:            'Datum voranstellen',
+        prefixDateHint:        'dd.mm.jjjj_ vor jeden Extrakt – aus den PDF-Metadaten, sonst das Dateidatum',
     },
 };
 
 const LS_CURRENT  = 'docExtractorCurrentSession';
 const LS_SESSIONS = 'docExtractorSessions';
+const LS_PREFIX   = 'docExtractorPrefixDate';
 
 let currentLang    = localStorage.getItem('lang') || 'en';
 let selectedFiles  = [];
@@ -207,6 +212,12 @@ document.addEventListener('DOMContentLoaded', () => {
     applyLanguage(currentLang);
     setupDropZone();
 
+    const prefixBox = document.getElementById('prefixDate');
+    prefixBox.checked = localStorage.getItem(LS_PREFIX) === '1';
+    prefixBox.addEventListener('change', () => {
+        localStorage.setItem(LS_PREFIX, prefixBox.checked ? '1' : '0');
+    });
+
     document.getElementById('batchBtn').addEventListener('click', runBatch);
     document.getElementById('langBtn').addEventListener('click', () => {
         applyLanguage(currentLang === 'en' ? 'de' : 'en');
@@ -274,6 +285,9 @@ async function runBatch() {
 
     const fd = new FormData();
     fd.append('session', currentSession);
+    fd.append('prefix_date', document.getElementById('prefixDate').checked ? 'true' : 'false');
+    // Reihenfolge von mtimes und files ist identisch – der Server ordnet ueber den Index zu.
+    selectedFiles.forEach(f => fd.append('mtimes', String(f.lastModified || '')));
     selectedFiles.forEach(f => fd.append('files', f));
 
     try {
@@ -306,7 +320,7 @@ function renderResults(results) {
                         : 'statusError';
         const tr = document.createElement('tr');
         tr.innerHTML =
-            `<td class="col-file">${r.filename}</td>` +
+            `<td class="col-file">${r.output || r.filename}</td>` +
             `<td class="col-status ${r.status}">${t(statusKey)}</td>` +
             `<td class="col-num">${r.pages !== undefined ? r.pages : '—'}</td>` +
             `<td class="col-num">${r.chars !== undefined ? r.chars.toLocaleString(locale) : '—'}</td>`;

@@ -24,6 +24,7 @@ Open in your browser after starting: **`http://localhost:7643`**
 - Already-processed files are automatically skipped - add newly scanned documents to an existing session without duplicates
 - Originals and extracts are stored per session under `frontend/batch/{session}/originals/` and `.../results/`
 - On next visit: resume the last session or start a new one
+- **"Prepend date"** checkbox: puts `dd.mm.yyyy_` in front of each extract, so the results folder sorts and reads like a filing cabinet
 
 ## Requirements
 
@@ -52,9 +53,17 @@ docker-compose -f docker-compose-extractor.yml up -d --build
 ### `POST /batch`
 Upload multiple PDFs, extract all, save results to disk. The optional `session` parameter groups files into named subdirectories.
 
+| Field         | Type   | Default     | Purpose                                                        |
+| ------------- | ------ | ----------- | -------------------------------------------------------------- |
+| `files`       | file[] | required    | The PDFs                                                        |
+| `session`     | string | `default`   | Subdirectory name, sanitised to `\w` and `-`, max 64 chars      |
+| `prefix_date` | bool   | `false`     | Put `dd.mm.yyyy_` in front of each extract                      |
+| `mtimes`      | string[] | –         | File date in milliseconds, one per file, **same order as `files`** |
+
 ```bash
 curl -X POST http://localhost:7643/batch \
   -F "session=Invoices-Q1-2026" \
+  -F "prefix_date=true" \
   -F "files=@invoice1.pdf" \
   -F "files=@invoice2.pdf"
 ```
@@ -63,13 +72,15 @@ Response:
 ```json
 {
   "results": [
-    {"filename": "invoice1.pdf", "status": "processed", "pages": 2, "chars": 3400, "estimated_tokens": 850},
+    {"filename": "invoice1.pdf", "output": "14.03.2026_invoice1.md", "status": "processed", "pages": 2, "chars": 3400, "estimated_tokens": 850},
     {"filename": "invoice2.pdf", "status": "skipped", "reason": "already processed"}
   ]
 }
 ```
 
 Files are stored under `frontend/batch/{session}/originals/` and `frontend/batch/{session}/results/`. Default session name is `default`.
+
+**On the date**: it is resolved in a cascade - the PDF's own `/CreationDate` first, then `mtimes`, then today. A server never sees a file's creation date; an upload carries only bytes and a filename, which is why `mtimes` exists. Originals keep their uploaded name in any case: that name is the key for the duplicate check.
 
 ### `POST /extract`
 Upload a PDF, receive extracted text and metadata.
@@ -79,10 +90,13 @@ curl -X POST http://localhost:7643/extract \
   -F "file=@document.pdf"
 ```
 
+Optional form field `mtime` (file date in milliseconds) feeds the same date cascade.
+
 Response:
 ```json
 {
   "filename": "document.pdf",
+  "doc_date": "14.03.2026",
   "pages": 12,
   "chars": 24800,
   "estimated_tokens": 6200,

@@ -4,11 +4,10 @@
 # Project-specific files to ignore
 
 # Batch output — private documents, never commit
-frontend/batch/originals/
-frontend/batch/results/
+frontend/batch/
 
 doc-extractor/
-DEVLOG.md
+DEVLOG*
 footer-info-section.html
 data/
 /data/

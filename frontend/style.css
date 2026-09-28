@@ -114,6 +114,35 @@ h1 {
    margin-top: 1rem;
 }
 
+/* Option "Datum voranstellen" */
+.opt-row {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+   margin-top: 1rem;
+   font-size: 0.88rem;
+   color: #2d3035;
+   cursor: pointer;
+   user-select: none;
+}
+
+.opt-row.opt-inline {
+   margin-top: 0;
+   margin-left: 0.5rem;
+}
+
+.opt-row input[type="checkbox"] {
+   width: 1rem;
+   height: 1rem;
+   accent-color: #7a8fa8;
+   cursor: pointer;
+}
+
+.opt-hint {
+   color: #9aaabb;
+   font-size: 0.8rem;
+}
+
 .file-name {
    flex: 1;
    font-size: 0.9rem;
