@@ -44,6 +44,21 @@ def doc_date(reader: PdfReader, mtime_ms: str = "") -> str:
     return (d or datetime.now()).strftime("%d.%m.%Y")
 
 
+def safe_name(filename: str) -> str:
+    """Nur der Basisname eines hochgeladenen Dateinamens, ohne Pfadanteile.
+
+    Der Name kommt aus dem Browser und wird unten zu einem Dateipfad
+    zusammengesetzt. Ungeprueft koennte ein praeparierter Client mit '../'
+    aus dem Sitzungsordner herausschreiben.
+
+    Backslashes werden zuerst zu '/', weil Path() sie unter Linux nicht als
+    Trenner sieht, Windows-Clients sie aber mitschicken ('..\\..\\x.pdf').
+    """
+    name = Path(filename.replace("\\", "/")).name.replace("\x00", "").strip()
+    # Path('..').name ist '' - der Sonderfall faellt damit hier mit heraus.
+    return name or "unknown.pdf"
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -95,7 +110,7 @@ async def batch_extract(
 
     results = []
     for idx, file in enumerate(files):
-        filename = file.filename or "unknown.pdf"
+        filename = safe_name(file.filename or "unknown.pdf")
         mtime = mtimes[idx] if idx < len(mtimes) else ""
 
         if not filename.lower().endswith(".pdf"):
